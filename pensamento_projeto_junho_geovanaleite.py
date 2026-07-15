@@ -128,18 +128,18 @@ def limpar_campos_venda():
     txt_v_qtd.delete(0, tk.END)
 
 # ==============================================================================
-# ESTRUTURA DA INTERFACE GRAFICA (TKINTER)
+# ESTRUTURA DA INTERFACE GRÁFICA (TKINTER)
 # ==============================================================================
 janela = tk.Tk()
 janela.title("Sistema de Vendas - Açaiteria")
-janela.geometry("800x650")
+janela.geometry("850x700")
 janela.resizable(False, False)
 
 # Estilo para deixar o visual do UX mais moderno
 style = ttk.Style()
 style.theme_use("clam")
 
-# Criando as Abas (Notebook) para separar os módulos de forma limpa
+# Criando as Abas (Notebook)
 notebook = ttk.Notebook(janela)
 notebook.pack(fill='both', expand=True, padx=10, pady=10)
 
@@ -156,7 +156,7 @@ notebook.add(aba4, text="Módulo IA & UX/Dev")
 # --- ABA 1: PRODUTOS & CLIENTES ---
 # Formulário de Cadastro de Produto
 lbl_frame_prod = ttk.LabelFrame(aba1, text=" Cadastrar Novo Produto ")
-lbl_frame_prod.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+lbl_frame_prod.pack(padx=10, pady=5, fill="x")
 
 campos_prod = [
     ("Código:", "txt_p_cod"), ("Nome:", "txt_p_nome"), ("Marca:", "txt_p_marca"),
@@ -165,29 +165,94 @@ campos_prod = [
     ("Descrição:", "txt_p_desc")
 ]
 
+# Grid interno para organizar os campos de produto de forma limpa
 for idx, (label_text, var_name) in enumerate(campos_prod):
     r = idx // 2
     c = (idx % 2) * 2
-    ttk.Label(lbl_frame_prod, text=label_text).grid(row=r, column=c, padx=5, pady=5, sticky="e")
+    ttk.Label(lbl_frame_prod, text=label_text).grid(row=r, column=c, padx=5, pady=3, sticky="e")
     globals()[var_name] = ttk.Entry(lbl_frame_prod, width=18)
-    globals()[var_name].grid(row=r, column=c+1, padx=5, pady=5)
+    globals()[var_name].grid(row=r, column=c+1, padx=5, pady=3, sticky="w")
 
 btn_cad_prod = ttk.Button(lbl_frame_prod, text="Salvar Produto", command=cadastrar_produto)
-btn_cad_prod.grid(row=5, column=2, columnspan=2, pady=10)
+btn_cad_prod.grid(row=5, column=0, columnspan=4, pady=10)
 
 # Formulário de Cadastro de Cliente
 lbl_frame_cli = ttk.LabelFrame(aba1, text=" Cadastrar Cliente ")
-lbl_frame_cli.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+lbl_frame_cli.pack(padx=10, pady=5, fill="x")
 
-ttk.Label(lbl_frame_cli, text="Nome:").grid(row=0, column=0, padx=5, pady=5)
-txt_c_nome = ttk.Entry(lbl_frame_cli, width=20)
-txt_c_nome.grid(row=0, column=1, padx=5, pady=5)
+ttk.Label(lbl_frame_cli, text="Nome:").grid(row=0, column=0, padx=5, pady=5, sticky="e")
+txt_c_nome = ttk.Entry(lbl_frame_cli, width=15)
+txt_c_nome.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
-ttk.Label(lbl_frame_cli, text="Telefone:").grid(row=0, column=2, padx=5, pady=5)
-txt_c_tel = ttk.Entry(lbl_frame_cli, width=15)
-txt_c_tel.grid(row=0, column=3, padx=5, pady=5)
+ttk.Label(lbl_frame_cli, text="Telefone:").grid(row=0, column=2, padx=5, pady=5, sticky="e")
+txt_c_tel = ttk.Entry(lbl_frame_cli, width=12)
+txt_c_tel.grid(row=0, column=3, padx=5, pady=5, sticky="w")
 
-# Subframe UX/Dev
+ttk.Label(lbl_frame_cli, text="Preferência:").grid(row=0, column=4, padx=5, pady=5, sticky="e")
+txt_c_pref = ttk.Entry(lbl_frame_cli, width=12)
+txt_c_pref.grid(row=0, column=5, padx=5, pady=5, sticky="w")
+
+btn_cad_cli = ttk.Button(lbl_frame_cli, text="Salvar Cliente", command=cadastrar_cliente)
+btn_cad_cli.grid(row=0, column=6, padx=10, pady=5)
+
+# Tabela de Produtos cadastrados para visualização imediata
+lbl_frame_lista_prod = ttk.LabelFrame(aba1, text=" Estoque Atual de Produtos ")
+lbl_frame_lista_prod.pack(padx=10, pady=5, fill="both", expand=True)
+
+tree_produtos = ttk.Treeview(lbl_frame_lista_prod, columns=("Código", "Nome", "Estoque", "Preço Venda"), show="headings", height=5)
+tree_produtos.heading("Código", text="Código")
+tree_produtos.heading("Nome", text="Nome")
+tree_produtos.heading("Estoque", text="Estoque")
+tree_produtos.heading("Preço Venda", text="Preço Venda")
+tree_produtos.pack(fill="both", expand=True, padx=5, pady=5)
+
+# --- ABA 2: REALIZAR VENDAS ---
+lbl_frame_realizar_venda = ttk.LabelFrame(aba2, text=" Informações da Venda ")
+lbl_frame_realizar_venda.pack(padx=20, pady=20, fill="both", expand=True)
+
+ttk.Label(lbl_frame_realizar_venda, text="Cód. Venda:").grid(row=0, column=0, padx=10, pady=10, sticky="e")
+txt_v_cod = ttk.Entry(lbl_frame_realizar_venda, width=25)
+txt_v_cod.grid(row=0, column=1, padx=10, pady=10, sticky="w")
+
+ttk.Label(lbl_frame_realizar_venda, text="Cliente:").grid(row=1, column=0, padx=10, pady=10, sticky="e")
+txt_v_cliente = ttk.Entry(lbl_frame_realizar_venda, width=25)
+txt_v_cliente.grid(row=1, column=1, padx=10, pady=10, sticky="w")
+
+ttk.Label(lbl_frame_realizar_venda, text="Cód. Produto:").grid(row=2, column=0, padx=10, pady=10, sticky="e")
+txt_v_prod_cod = ttk.Entry(lbl_frame_realizar_venda, width=25)
+txt_v_prod_cod.grid(row=2, column=1, padx=10, pady=10, sticky="w")
+
+ttk.Label(lbl_frame_realizar_venda, text="Quantidade:").grid(row=3, column=0, padx=10, pady=10, sticky="e")
+txt_v_qtd = ttk.Entry(lbl_frame_realizar_venda, width=25)
+txt_v_qtd.grid(row=3, column=1, padx=10, pady=10, sticky="w")
+
+btn_vender = ttk.Button(lbl_frame_realizar_venda, text="Confirmar Transação", command=realizar_venda)
+btn_vender.grid(row=4, column=0, columnspan=2, pady=20)
+
+# --- ABA 3: HISTÓRICO DE VENDAS ---
+lbl_frame_historico = ttk.LabelFrame(aba3, text=" Relatório de Vendas Efetuadas ")
+lbl_frame_historico.pack(padx=10, pady=10, fill="both", expand=True)
+
+tree_vendas = ttk.Treeview(lbl_frame_historico, columns=("ID Venda", "Cliente", "Produto", "Qtd", "Valor Total"), show="headings")
+tree_vendas.heading("ID Venda", text="ID Venda")
+tree_vendas.heading("Cliente", text="Cliente")
+tree_vendas.heading("Produto", text="Produto")
+tree_vendas.heading("Qtd", text="Qtd")
+tree_vendas.heading("Valor Total", text="Valor Total")
+tree_vendas.pack(fill="both", expand=True, padx=5, pady=5)
+
+# --- ABA 4: MÓDULO IA & UX/DEV ---
+# Frame da IA
+lf_ia = ttk.LabelFrame(aba4, text=" Análise Predictiva & Relatório de Desempenho (IA) ")
+lf_ia.pack(padx=10, pady=5, fill="both", expand=True)
+
+btn_ia = ttk.Button(lf_ia, text="Executar Análise de Dados", command=rodar_analise_ia)
+btn_ia.pack(pady=10)
+
+lbl_ia_res = ttk.Label(lf_ia, text="Dados insuficientes para análise. Realize vendas primeiro.", justify="center", font=("Arial", 10, "bold"))
+lbl_ia_res.pack(pady=15)
+
+# Frame de Informações Técnicas
 lf_ux_dev = ttk.LabelFrame(aba4, text=" Informações Técnicas (Módulos UX / Tech / Dev) ")
 lf_ux_dev.pack(padx=10, pady=10, fill="both", expand=True)
 
@@ -199,9 +264,8 @@ info_tech = (
     "• QA: Validações de tipos implementadas por tratamento de exceção (try/except)."
 )
 
-# CERTIFIQUE-SE DE QUE ESTA LINHA ESTÁ EXATAMENTE ASSIM:
 lbl_tech_info = ttk.Label(lf_ux_dev, text=info_tech, justify="left")
 lbl_tech_info.pack(padx=10, pady=10, anchor="nw")
 
-# Inicia o loop da interface gráfica
+# Inicia o loop principal da aplicação
 janela.mainloop()
